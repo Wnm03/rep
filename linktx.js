@@ -120,7 +120,7 @@ el.innerHTML=list.map(t=>{
 const acc=D.accounts.find(a=>a.id===t.accountId);
 const checked=LinkTx.selected.has(String(t.id))?'checked':'';
 return`<div class="tx-item u-pointer" data-action="LinkTx.toggleSelectAndRender" data-args="${escapeHtml(JSON.stringify([t.id]))}">
-          <input type="checkbox" ${checked} style="width:18px;height:18px;margin-right:4px" data-stop="1" data-action="LinkTx.toggleSelectAndRender" data-args="${escapeHtml(JSON.stringify([t.id]))}">
+          <input type="checkbox" ${checked} style="width:18px;height:18px;margin-right:4px" data-stop="1" data-action="LinkTx.toggleSelectAndRender" data-args="${escapeHtml(JSON.stringify([t.id]))}" aria-label="Pilih transaksi ${escapeHtml(t.note||t.category||'ini')} untuk ditautkan">
           <div class="tx-icon" style="background:var(--accent2-soft)">💸</div>
           <div class="tx-info">
             <div class="tx-name">${escapeHtml(t.note||t.category||'Transaksi')}</div>

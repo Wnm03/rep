@@ -1,6 +1,6 @@
 
 // Dipindah ke modules/shared/modules-calc.js (Sesi 17-18 restrukturisasi folder — lihat docs/FILE-MAP.md & RENCANA-SESI.md; isi & nama file TIDAK berubah, cuma lokasi folder).
-const MODULE_CALC_VERSION='sesi315-selftest-preload-lazy-modules';
+const MODULE_CALC_VERSION='sesi316-aria-linktx-plus-honest-lazyload-diagnostic';
 const FI={
 assetScopeState:'zakatable',
 investmentAssetValue(){
