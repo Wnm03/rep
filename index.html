@@ -80,9 +80,9 @@
 <link rel="preconnect" href="https://accounts.google.com" crossorigin>
 <link rel="dns-prefetch" href="https://accounts.google.com">
 <title>Keluarga W</title>
-<link rel="stylesheet" href="styles.css?v=882">
-<link rel="stylesheet" href="modern-ui-layer.css?v=882">
-<script src="nav-scroll.js?v=882" defer></script>
+<link rel="stylesheet" href="styles.css?v=885">
+<link rel="stylesheet" href="modern-ui-layer.css?v=885">
+<script src="nav-scroll.js?v=885" defer></script>
 <script>
 /* Debug console (Eruda) — aktifkan sekali lewat ?debug=1 di URL, nempel via localStorage.
    Matikan lagi lewat ?debug=0. Tidak aktif buat user biasa. */
@@ -102,11 +102,19 @@ s.onload=function(){ try{ eruda.init(); }catch(e){} };
 </script>
 <script>
 window._loadedScripts=window._loadedScripts||{};
-function _loadScriptOnce(src){
-if(window._loadedScripts[src])return window._loadedScripts[src];
-window._loadedScripts[src]=new Promise((resolve,reject)=>{
+// Sesi 312 BUGFIX (scanner-fatal-perframe-fix): sebelum ini SATU kali gagal
+// (404 sesaat/CDN belum sinkron/hiccup jaringan) langsung reject permanen --
+// module lazy-load (renovasi.js/sewakios.js/business-intelligence-presenter.js)
+// jadi tampil banner "gagal dimuat" walau file-nya ADA, cuma request pertama
+// yang gagal. Sekarang retry otomatis 1x dengan cache-buster baru sebelum
+// benar-benar menyerah, dan promise gagal dihapus dari cache supaya tab
+// dibuka ulang bisa coba lagi (bukan tersangkut gagal selamanya per sesi).
+function _loadScriptOnce(src,_isRetry){
+if(!_isRetry && window._loadedScripts[src])return window._loadedScripts[src];
+const p=new Promise((resolve,reject)=>{
 const s=document.createElement('script');
-s.src=src;s.async=true;
+s.src=_isRetry?(src+(src.indexOf('?')>-1?'&':'?')+'_retry='+Date.now()):src;
+s.async=true;
 let done=false;
 const timeoutId=setTimeout(()=>{
 if(done)return;done=true;
@@ -114,10 +122,20 @@ delete window._loadedScripts[src];
 reject(new Error('Timeout memuat '+src+' — cek koneksi internet, atau kalau pakai Brave coba matikan Shields untuk situs ini, lalu coba lagi'));
 },12000);
 s.onload=()=>{if(done)return;done=true;clearTimeout(timeoutId);resolve();};
-s.onerror=()=>{if(done)return;done=true;clearTimeout(timeoutId);delete window._loadedScripts[src];reject(new Error('Gagal memuat '+src));};
+s.onerror=()=>{
+if(done)return;done=true;clearTimeout(timeoutId);
+delete window._loadedScripts[src];
+if(!_isRetry){
+// satu kali percobaan ulang otomatis sebelum melaporkan gagal
+_loadScriptOnce(src,true).then(resolve).catch(reject);
+}else{
+reject(new Error('Gagal memuat '+src));
+}
+};
 document.head.appendChild(s);
 });
-return window._loadedScripts[src];
+if(!_isRetry) window._loadedScripts[src]=p;
+return p;
 }
 function ensureTesseract(){return _loadScriptOnce('https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js');}
 function ensureJsPDF(){return _loadScriptOnce('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');}
@@ -130,17 +148,17 @@ function ensureZXing(){return _loadScriptOnce('https://cdn.jsdelivr.net/npm/@zxi
 // dimuat on-demand lewat pola _loadScriptOnce() yang sama dgn CDN di atas.
 // Dipanggil dari setKeuanganTab() (tx-list-cashflow.js) saat tab Aset & Proyek
 // > Proyek Renovasi pertama dibuka.
-function ensureRenov(){return _loadScriptOnce('modules/home/renovasi.js?v=882');}
+function ensureRenov(){return _loadScriptOnce('modules/home/renovasi.js?v=885');}
 // sewakios.js dikeluarkan dari app-bundle-a.min.js (scripts/build.js GROUP_A),
 // dimuat on-demand lewat pola _loadScriptOnce() yang sama dgn Renov di atas.
 // Dipanggil dari setKeuanganTab() (tx-list-cashflow.js) saat tab Aset & Proyek
 // pertama dibuka.
-function ensureSewaKios(){return _loadScriptOnce('modules/business/sewakios.js?v=882');}
+function ensureSewaKios(){return _loadScriptOnce('modules/business/sewakios.js?v=885');}
 // business-intelligence-presenter.js dikeluarkan dari app-bundle-b.min.js
 // (scripts/build.js GROUP_B), dimuat on-demand lewat pola sama.
 // Dipanggil dari setShopTab() (cobek-io.js) saat tab Shop > Business
 // Intelligence pertama dibuka.
-function ensureBusinessIntelligence(){return _loadScriptOnce('modules/shop/business-intelligence-presenter.js?v=882');}
+function ensureBusinessIntelligence(){return _loadScriptOnce('modules/shop/business-intelligence-presenter.js?v=885');}
 </script>
 <script>
 window.__moduleLoadFail=function(name){
@@ -217,8 +235,8 @@ window.location.reload();
 }catch(e){}
 })();
 </script>
-<script src="app-bundle-a.min.js?v=882" onerror="window.__moduleLoadFail('app-bundle-a.min.js')"></script>
-<script src="modules/shared/smoke-test.js?v=882" defer></script>
+<script src="app-bundle-a.min.js?v=885" onerror="window.__moduleLoadFail('app-bundle-a.min.js')"></script>
+<script src="modules/shared/smoke-test.js?v=885" defer></script>
 <link rel="manifest" id="pwaManifestLink" href="manifest.json">
 </head>
 <body data-theme="fresh">
@@ -3749,6 +3767,6 @@ window.location.reload();
 <script>document.write(MODAL_HTML[86]);</script><!-- modal:inventoryTransferModal (S244) -->
 <script>document.write(MODAL_HTML[87]);</script><!-- modal:shopKatalogDinamisModal (fix: sebelumnya tidak pernah di-write) -->
 
-<script src="app-bundle-b.min.js?v=882" onerror="window.__moduleLoadFail('app-bundle-b.min.js')"></script>
+<script src="app-bundle-b.min.js?v=885" onerror="window.__moduleLoadFail('app-bundle-b.min.js')"></script>
 </body>
 </html>

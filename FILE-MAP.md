@@ -11,7 +11,7 @@
 > file tapi lupa `node build.js`), jalankan ulang generatornya, JANGAN diedit
 > tangan — editan manual bakal ketimpa lagi di build berikutnya.
 
-Terakhir digenerate: 2026-07-29T09:20:58.367Z
+Terakhir digenerate: 2026-07-29T10:24:37.290Z
 Total file source: 278 · Total identifier global: 1943
 
 ## 1. Urutan load & ringkasan tiap file
@@ -98,7 +98,7 @@ bundler menggabungkan semua file jadi `app-bundle-a.min.js`/`app-bundle-b.min.js
 | 75 | `modules/business/insight-target-mingguan.js` | 71 | S132: Insight Target Mingguan (kirim uang ke istri). Domain BARU, tapi 100% reuse data & fungsi yang sudah ada: - Target = D.profile.kiriman (field "Kiriman Mingguan (Rp)" yang SUDAH ADA di Pengaturan → Profil, dulu … |
 | 76 | `modules/vehicle/vehicle-core.js` | 679 | Domain Vehicle core: CRUD kendaraan, KM (log & estimasi konsumsi/rp-per-km), Pajak Kendaraan (STNK tahunan/5-tahunan + SPT Tahunan pribadi), SIM, proactive reminders (dashboard), dan Car Notes tab (filter periode, edit … |
 | 77 | `modules/vehicle/vehicle-catalog.js` | 612 | Parts Catalog (Katalog Suku Cadang), Milestone 0 Phase 1: fondasi murni (storage + CRUD + validation + search + filter), TANPA UI/wiring page baru. PERUBAHAN SESI INI (TASK-007 — Tahap 3 OCR label kemasan, logic saja, … |
-| 78 | `modules/vehicle/vehicle-scanner.js` | 469 | Scan Barcode/QR/DataMatrix untuk Vehicle Catalog (lanjutan dari ACR-001/Tahap 2 — lihat komentar handleScan() di vehicle-catalog.js: "itu butuh keputusan produk terpisah: pilih library, izin kamera, dsb — di luar … |
+| 78 | `modules/vehicle/vehicle-scanner.js` | 491 | Scan Barcode/QR/DataMatrix untuk Vehicle Catalog (lanjutan dari ACR-001/Tahap 2 — lihat komentar handleScan() di vehicle-catalog.js: "itu butuh keputusan produk terpisah: pilih library, izin kamera, dsb — di luar … |
 | 79 | `modules/vehicle/vehicle-catalog-ui.js` | 434 | UI dasar Vehicle Catalog (Katalog Suku Cadang), lanjutan ringkas Tahap 2 ACR-001. Scan (vehicle-scanner.js) & storage/CRUD (vehicle-catalog.js) SUDAH ADA dari sesi sebelumnya — sesi ini isinya HANYA lapisan UI, scope … |
 | 80 | `modules/vehicle/sparepart-scanner.js` | 584 | Scanner Sparepart (Tahap 7B-1 Fondasi + Tahap 7B-2 Kamera Real-Time) CAKUPAN TAHAP 7B-1 (fondasi, disepakati eksplisit — RULE #1: 100% reuse, TIDAK ada formula/skema baru, UI presenter layer saja): - Adapter "gallery": … |
 | 81 | `modules/vehicle/sparepart-scanner-ui.js` | 76 | UI tipis Scanner Sparepart (Tahap 7B-1 Fondasi + Tahap 7B-2 Kamera Real-Time), tombol "📷 Scan" (kamera) & "🖼️ Scan dari Galeri" di catalogModal (modules/shared/modals.js) yang SUDAH ADA (VehicleCatalogUI/catalogModal, … |
@@ -137,7 +137,7 @@ bundler menggabungkan semua file jadi `app-bundle-a.min.js`/`app-bundle-b.min.js
 | 114 | `sheets-schema.js` | 224 | Skema kolom Google Sheets per modul (SHEETS_SCHEMAS/SHEETS_MODULES) & helper konversi item<->baris (sheetsHeaderFor/sheetsItemToCells/sheetsCellsToItem dst), dipakai oleh sheets-sync.js. Dipisah dari … |
 | 115 | `sheets-sync.js` | 239 | Integrasi Google Sheets: koneksi OAuth, sinkronisasi push/pull data D.* ke/dari Google Spreadsheet. Dipisah dari features-sheets-pwa-selftest.js (Sesi 2 restrukturisasi folder, blok 1/5 — lihat … |
 | 116 | `pwa-setup.js` | 49 | Setup PWA: registrasi manifest (via Blob kalau tidak di-hosting https) & service worker (sw.js, fallback inline Blob). Dipisah dari features-sheets-pwa-selftest.js (Sesi 2 restrukturisasi folder, blok 2/5 — lihat … |
-| 117 | `self-test.js` | 2109 | CATATAN (Sesi 297): file ini adalah runtime app (bukan file test Node), tapi namanya cocok pola default `node --test` (*-test.js) sehingga bisa ke-load & "gagal" kalau `node --test` dijalankan TANPA argumen di root. … |
+| 117 | `self-test.js` | 2120 | CATATAN (Sesi 297): file ini adalah runtime app (bukan file test Node), tapi namanya cocok pola default `node --test` (*-test.js) sehingga bisa ke-load & "gagal" kalau `node --test` dijalankan TANPA argumen di root. … |
 | 118 | `pajak-aset-ui-wrappers.js` | 161 | Wrapper UI tipis: parser angka (parsePzNum/parseDecStr/ normalizeOcrNumber), ganti tab pajak/zakat (setPajakTab/setPjkTab/savePajakSettings), dan delegasi tipis ke modul … |
 | 119 | `modules/finance/finance-intelligence.js` | 238 | Finance Intelligence Foundation (Sesi 74, Batch 6). Target sesi: Cash Flow Summary, Budget Summary, Income vs Expense, Financial Health Score, Insight dasar — lihat docs/BATCH_PLAN.md § Batch 6. PRINSIP (RULE #1 sesi … |
 | 120 | `modules/finance/finance-dashboard.js` | 202 | modules/finance/finance-dashboard.js — Finance Dashboard & AI Hook Foundation (Sesi 75, Batch 6). Lihat docs/BATCH_PLAN.md § Batch 6. PRINSIP (RULE #1 sesi ini): UI HANYA presenter. 100% REUSE … |
