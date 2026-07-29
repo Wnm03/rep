@@ -120,7 +120,29 @@ function vehicleScannerApplyTorchCapability(video, flashBtn) {
 function vehicleScannerIsHarmlessDecodeError(err) {
   if (!err) return true;
   const name = err.name || '';
-  return name === 'NotFoundException' || name === 'ChecksumException' || name === 'FormatException';
+  if (name === 'NotFoundException' || name === 'ChecksumException' || name === 'FormatException') return true;
+  // BUGFIX (laporan user: scan gagal di frame PERTAMA, toast "Gagal scan: No
+  // MultiFormat Readers were able to detect the code." -- padahal pesan itu
+  // sendiri adalah NotFoundException ZXing yang NORMAL/harus diabaikan tiap
+  // frame). Root cause: build @zxing/library tertentu yang dimuat lewat CDN
+  // tidak menyetel `err.name` pada instance exception-nya (console menunjukkan
+  // objek anonim/constructor termangling, mis. "N {}"), jadi cek `err.name`
+  // di atas SELALU gagal cocok & exception normal ini dianggap fatal. Dua
+  // lapis fallback: (1) instanceof terhadap kelas exception ZXing sendiri
+  // (tetap tersedia di namespace global ZXing walau instance-nya diminify),
+  // (2) cocokkan teks pesan resmi yang dilempar ZXing utk ketiga exception
+  // ini, kalau instanceof pun tidak tersedia (mis. versi library berbeda).
+  try {
+    if (typeof ZXing !== 'undefined' && ZXing) {
+      if ((ZXing.NotFoundException && err instanceof ZXing.NotFoundException) ||
+          (ZXing.ChecksumException && err instanceof ZXing.ChecksumException) ||
+          (ZXing.FormatException && err instanceof ZXing.FormatException)) {
+        return true;
+      }
+    }
+  } catch (e) { /* no-op */ }
+  const msg = (err.message || '') + '';
+  return /no multiformat readers? were able to detect the code/i.test(msg);
 }
 
 function vehicleScannerErrorMessage(err) {

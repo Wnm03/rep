@@ -1545,6 +1545,17 @@ findMissingAriaLabels(document).forEach(msg=>_selfTestAssert(false,msg));
 ];
 }
 async function computeSelfTestResults(){
+// BUGFIX (sesi 315 — laporan user: "Tes Otomatis" 101/102, 1 gagal "SewaKios
+// is not defined"): sama root cause dgn fix modal sweep (computeModalSweepResults())
+// -- SewaKios (modules/business/sewakios.js) & Renov (modules/home/renovasi.js,
+// dipakai SewaKios.roi() lewat Renov.totals()) dikeluarkan dari bundle,
+// lazy-load on-demand saat tab Aset & Proyek dibuka. Tes Otomatis biasa
+// dijalankan dari Dashboard/Diagnostik, bukan dari tab itu, jadi modulnya
+// belum tentu termuat -> "X is not defined" palsu, bukan bug sungguhan.
+// Muat dulu di sini, try/catch spy per-modul (1 modul gagal offline dll
+// tidak boleh menjatuhkan seluruh rangkaian tes lain).
+try{ if(typeof ensureRenov==='function') await ensureRenov(); }catch(e){}
+try{ if(typeof ensureSewaKios==='function') await ensureSewaKios(); }catch(e){}
 const cases=getSelfTestCases();
 const results=[];
 for(const c of cases){
@@ -1932,6 +1943,16 @@ const originalActive=document.querySelector('.page.active');
 const originalName=originalActive?originalActive.id.replace('page-',''):'dashboard';
 const _scrollRootEl=document.getElementById('scrollRoot');
 const _savedScrollTop=_scrollRootEl?_scrollRootEl.scrollTop:0;
+// Sesi 312 BUGFIX: preload sebelumnya ditaruh tepat SEBELUM loop
+// MODULE_METHOD_MODAL_SPECS (di bawah) -- tapi EXTRA_MODAL_SWEEP_SPECS
+// (RenovAI.suggest(), dites LEBIH DULU) jalan sebelum titik itu, jadi
+// RenovAI masih "is not defined" walau renovasi.js sendiri berhasil
+// dimuat sesaat kemudian. Pindahkan preload ke PALING AWAL fungsi ini
+// supaya seluruh spec (termasuk RenovAI di EXTRA_MODAL_SWEEP_SPECS)
+// melihat modul yang konsisten sudah/belum termuat, tidak lagi
+// tergantung urutan array spec.
+try{ if(typeof ensureRenov==='function') await ensureRenov(); }catch(e){}
+try{ if(typeof ensureSewaKios==='function') await ensureSewaKios(); }catch(e){}
 const fnNames=computeModalSweepFnNames();
 const results=[];
 for(const fn of fnNames){
@@ -1945,16 +1966,6 @@ results.push(await testOneModalOpener(spec));
 for(const spec of RISKY_OPENER_SPECS){
 results.push(await testOneModalOpener(spec));
 }
-// Sesi 311: Renov/RenovAI/RenovCalc (modules/home/renovasi.js) dan SewaKios
-// (modules/business/sewakios.js) dikeluarkan dari bundle (lazy-load on-demand,
-// lihat ensureRenov()/ensureSewaKios() di index.html). Modal sweep ini biasa
-// dijalankan dari Dashboard/Diagnostik, bukan dari tab yang memicu lazy-load
-// aslinya, jadi objeknya belum pernah dimuat -> "X is not defined" palsu.
-// Muat dulu sebelum sweep MODULE_METHOD_MODAL_SPECS, sama pola try/catch
-// dgn register*AIRules() di init() -- satu modul gagal dimuat (mis. offline)
-// tidak boleh menjatuhkan seluruh sweep, cukup dilaporkan sbg gagal utk spec itu.
-try{ if(typeof ensureRenov==='function') await ensureRenov(); }catch(e){}
-try{ if(typeof ensureSewaKios==='function') await ensureSewaKios(); }catch(e){}
 for(const spec of MODULE_METHOD_MODAL_SPECS){
 results.push(await testOneModalOpener(spec));
 }
