@@ -107,6 +107,22 @@ function vehicleScannerApplyTorchCapability(video, flashBtn) {
   return false;
 }
 
+// BUGFIX (sesi ini, PD-007 lanjutan — laporan reproduksi: fatal error kadang
+// dikirim ZXing lewat parameter `err` callback per-frame onDecode(), BUKAN
+// lewat reject() promise decodeFromConstraints()/decodeFromVideoDevice() —
+// satu-satunya jalur yang sebelumnya ditangkap catch block. onDecode() lama
+// TIDAK PERNAH membaca `err` sama sekali, jadi kalau ZXing lewat jalur ini
+// (mis. NotAllowedError izin kamera ditolak), reader "hidup" terus tanpa
+// hasil/toast/exit() — overlay+kamera nyangkut permanen. Exception decode-
+// per-attempt (NotFoundException/ChecksumException/FormatException) TETAP
+// harus diabaikan — itu normal, dilempar terus-menerus tiap frame selama
+// belum ada kode yang kebaca, BUKAN error sungguhan.
+function vehicleScannerIsHarmlessDecodeError(err) {
+  if (!err) return true;
+  const name = err.name || '';
+  return name === 'NotFoundException' || name === 'ChecksumException' || name === 'FormatException';
+}
+
 function vehicleScannerErrorMessage(err) {
   // BUGFIX (sesi ini): ZXing melempar kelas exception (NotFoundException,
   // ChecksumException, FormatException, dll) yang seringkali punya
@@ -388,10 +404,18 @@ async function vehicleScannerScan() {
           vehicleScannerRecordScan(code, Date.now());
           stop();
           vehicleScannerHandleResult(code);
+          return;
         }
         // NotFoundException dilempar terus-menerus selama belum ada kode di
         // frame — itu normal utk continuous scan, BUKAN error, jadi diabaikan
-        // di sini (bukan ditampilkan sebagai toast per-frame).
+        // di sini (bukan ditampilkan sebagai toast per-frame). Selain itu
+        // (fatal, mis. izin kamera ditolak lewat jalur callback ini) — lihat
+        // catatan vehicleScannerIsHarmlessDecodeError() di atas.
+        if (err && !vehicleScannerIsHarmlessDecodeError(err)) {
+          console.error('[VehicleScanner] gagal scan (per-frame):', err);
+          stop();
+          toast('❌ Gagal scan: ' + vehicleScannerErrorMessage(err));
+        }
       };
 
       try {
@@ -432,6 +456,7 @@ const VehicleScanner = {
   // buildHints yang sudah ada.
   shouldDebounce: vehicleScannerShouldDebounce,
   recordScan: vehicleScannerRecordScan,
+  isHarmlessDecodeError: vehicleScannerIsHarmlessDecodeError,
   stopMediaStream: vehicleScannerStopMediaStream,
   applyTorchCapability: vehicleScannerApplyTorchCapability,
   pauseCamera: vehicleScannerPauseCamera,

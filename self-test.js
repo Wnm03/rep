@@ -1945,6 +1945,16 @@ results.push(await testOneModalOpener(spec));
 for(const spec of RISKY_OPENER_SPECS){
 results.push(await testOneModalOpener(spec));
 }
+// Sesi 311: Renov/RenovAI/RenovCalc (modules/home/renovasi.js) dan SewaKios
+// (modules/business/sewakios.js) dikeluarkan dari bundle (lazy-load on-demand,
+// lihat ensureRenov()/ensureSewaKios() di index.html). Modal sweep ini biasa
+// dijalankan dari Dashboard/Diagnostik, bukan dari tab yang memicu lazy-load
+// aslinya, jadi objeknya belum pernah dimuat -> "X is not defined" palsu.
+// Muat dulu sebelum sweep MODULE_METHOD_MODAL_SPECS, sama pola try/catch
+// dgn register*AIRules() di init() -- satu modul gagal dimuat (mis. offline)
+// tidak boleh menjatuhkan seluruh sweep, cukup dilaporkan sbg gagal utk spec itu.
+try{ if(typeof ensureRenov==='function') await ensureRenov(); }catch(e){}
+try{ if(typeof ensureSewaKios==='function') await ensureSewaKios(); }catch(e){}
 for(const spec of MODULE_METHOD_MODAL_SPECS){
 results.push(await testOneModalOpener(spec));
 }

@@ -11,8 +11,8 @@
 > file tapi lupa `node build.js`), jalankan ulang generatornya, JANGAN diedit
 > tangan — editan manual bakal ketimpa lagi di build berikutnya.
 
-Terakhir digenerate: 2026-07-29T06:13:33.752Z
-Total file source: 278 · Total identifier global: 1939
+Terakhir digenerate: 2026-07-29T09:20:58.367Z
+Total file source: 278 · Total identifier global: 1943
 
 ## 1. Urutan load & ringkasan tiap file
 
@@ -65,7 +65,7 @@ bundler menggabungkan semua file jadi `app-bundle-a.min.js`/`app-bundle-b.min.js
 | 42 | `modules/shared/keamanan-pin.js` | 269 | Domain Keamanan: layar PIN (showPinScreen/checkPin/pinPress/pinBack/updatePinDots), Dipindah ke modules/shared/keamanan-pin.js (Sesi 17-18 restrukturisasi folder — lihat docs/FILE-MAP.md & RENCANA-SESI.md; isi & nama … |
 | 43 | `modules/home/refleksi-selfcare.js` | 256 | Domain Refleksi & Self-Care: Jurnal Syukur, Checklist Self-Care harian Dipindah ke modules/home/refleksi-selfcare.js (Sesi 13 restrukturisasi folder — lihat docs/FILE-MAP.md & RENCANA-SESI.md; isi & nama file TIDAK … |
 | 44 | `modules/shared/modal-navigasi.js` | 351 | Domain Modal Generik & Navigasi Halaman: modal konfirmasi/prompt/pilihan/info/pin Dipindah ke modules/shared/modal-navigasi.js (Sesi 17-18 restrukturisasi folder — lihat docs/FILE-MAP.md & RENCANA-SESI.md; isi & nama … |
-| 45 | `modules/shared/scanner-session.js` | 194 | modules/shared/scanner-session.js — ScannerSession (Tahap 5, docs/ PRODUCT_DECISIONS.md § "Scanner — Exclusive Scanner Mode via ScannerSession (FINAL — Sesi 316, PD-007)"). PD-007 — Scanner WAJIB berjalan lewat … |
+| 45 | `modules/shared/scanner-session.js` | 238 | modules/shared/scanner-session.js — ScannerSession (Tahap 5, docs/ PRODUCT_DECISIONS.md § "Scanner — Exclusive Scanner Mode via ScannerSession (FINAL — Sesi 316, PD-007)"). PD-007 — Scanner WAJIB berjalan lewat … |
 | 46 | `modules/business/reset-gaji-mingguan.js` | 115 | Domain Reset Gaji Mingguan: hitung rentang minggu berjalan (getWeekRange), Dipindah ke modules/business/reset-gaji-mingguan.js (Sesi 15 restrukturisasi folder — lihat docs/FILE-MAP.md & RENCANA-SESI.md; isi & nama file … |
 | 47 | `modules/shared/debug-console.js` | 50 | Domain Debug Console: toggle tombol status (updateDebugConsoleBtn) & aktifkan/matikan Dipindah ke modules/shared/debug-console.js (Sesi 17-18 restrukturisasi folder — lihat docs/FILE-MAP.md & RENCANA-SESI.md; isi & nama … |
 | 48 | `modules/shared/pengaturan-search.js` | 140 | Domain Pencarian Pengaturan: buka/tutup grup pengaturan (toggleStgGroup), cari Dipindah ke modules/shared/pengaturan-search.js (Sesi 17-18 restrukturisasi folder — lihat docs/FILE-MAP.md & RENCANA-SESI.md; isi & nama … |
@@ -98,9 +98,9 @@ bundler menggabungkan semua file jadi `app-bundle-a.min.js`/`app-bundle-b.min.js
 | 75 | `modules/business/insight-target-mingguan.js` | 71 | S132: Insight Target Mingguan (kirim uang ke istri). Domain BARU, tapi 100% reuse data & fungsi yang sudah ada: - Target = D.profile.kiriman (field "Kiriman Mingguan (Rp)" yang SUDAH ADA di Pengaturan → Profil, dulu … |
 | 76 | `modules/vehicle/vehicle-core.js` | 679 | Domain Vehicle core: CRUD kendaraan, KM (log & estimasi konsumsi/rp-per-km), Pajak Kendaraan (STNK tahunan/5-tahunan + SPT Tahunan pribadi), SIM, proactive reminders (dashboard), dan Car Notes tab (filter periode, edit … |
 | 77 | `modules/vehicle/vehicle-catalog.js` | 612 | Parts Catalog (Katalog Suku Cadang), Milestone 0 Phase 1: fondasi murni (storage + CRUD + validation + search + filter), TANPA UI/wiring page baru. PERUBAHAN SESI INI (TASK-007 — Tahap 3 OCR label kemasan, logic saja, … |
-| 78 | `modules/vehicle/vehicle-scanner.js` | 444 | Scan Barcode/QR/DataMatrix untuk Vehicle Catalog (lanjutan dari ACR-001/Tahap 2 — lihat komentar handleScan() di vehicle-catalog.js: "itu butuh keputusan produk terpisah: pilih library, izin kamera, dsb — di luar … |
+| 78 | `modules/vehicle/vehicle-scanner.js` | 469 | Scan Barcode/QR/DataMatrix untuk Vehicle Catalog (lanjutan dari ACR-001/Tahap 2 — lihat komentar handleScan() di vehicle-catalog.js: "itu butuh keputusan produk terpisah: pilih library, izin kamera, dsb — di luar … |
 | 79 | `modules/vehicle/vehicle-catalog-ui.js` | 434 | UI dasar Vehicle Catalog (Katalog Suku Cadang), lanjutan ringkas Tahap 2 ACR-001. Scan (vehicle-scanner.js) & storage/CRUD (vehicle-catalog.js) SUDAH ADA dari sesi sebelumnya — sesi ini isinya HANYA lapisan UI, scope … |
-| 80 | `modules/vehicle/sparepart-scanner.js` | 549 | Scanner Sparepart (Tahap 7B-1 Fondasi + Tahap 7B-2 Kamera Real-Time) CAKUPAN TAHAP 7B-1 (fondasi, disepakati eksplisit — RULE #1: 100% reuse, TIDAK ada formula/skema baru, UI presenter layer saja): - Adapter "gallery": … |
+| 80 | `modules/vehicle/sparepart-scanner.js` | 584 | Scanner Sparepart (Tahap 7B-1 Fondasi + Tahap 7B-2 Kamera Real-Time) CAKUPAN TAHAP 7B-1 (fondasi, disepakati eksplisit — RULE #1: 100% reuse, TIDAK ada formula/skema baru, UI presenter layer saja): - Adapter "gallery": … |
 | 81 | `modules/vehicle/sparepart-scanner-ui.js` | 76 | UI tipis Scanner Sparepart (Tahap 7B-1 Fondasi + Tahap 7B-2 Kamera Real-Time), tombol "📷 Scan" (kamera) & "🖼️ Scan dari Galeri" di catalogModal (modules/shared/modals.js) yang SUDAH ADA (VehicleCatalogUI/catalogModal, … |
 | 82 | `modules/vehicle/sparepart-ocr.js` | 125 | Engine OCR Sparepart Scanner (Tahap 7C-1, Fondasi) CAKUPAN TAHAP 7C-1 (disepakati eksplisit — RULE #1: 100% reuse, TIDAK ada OCR engine baru, TIDAK ada integrasi Vehicle Catalog): - Engine baca 1 foto dari GALERI (input … |
 | 83 | `modules/vehicle/sparepart-ocr-parser.js` | 151 | Parser Hasil OCR Sparepart (Tahap 7C-2, logic murni) CAKUPAN TAHAP 7C-2 (disepakati eksplisit — parsing MURNI, BELUM menyimpan data, BELUM ubah UI): - Terima STRING teks OCR mentah (hasil SparepartOcr.scan(), Tahap … |
@@ -137,7 +137,7 @@ bundler menggabungkan semua file jadi `app-bundle-a.min.js`/`app-bundle-b.min.js
 | 114 | `sheets-schema.js` | 224 | Skema kolom Google Sheets per modul (SHEETS_SCHEMAS/SHEETS_MODULES) & helper konversi item<->baris (sheetsHeaderFor/sheetsItemToCells/sheetsCellsToItem dst), dipakai oleh sheets-sync.js. Dipisah dari … |
 | 115 | `sheets-sync.js` | 239 | Integrasi Google Sheets: koneksi OAuth, sinkronisasi push/pull data D.* ke/dari Google Spreadsheet. Dipisah dari features-sheets-pwa-selftest.js (Sesi 2 restrukturisasi folder, blok 1/5 — lihat … |
 | 116 | `pwa-setup.js` | 49 | Setup PWA: registrasi manifest (via Blob kalau tidak di-hosting https) & service worker (sw.js, fallback inline Blob). Dipisah dari features-sheets-pwa-selftest.js (Sesi 2 restrukturisasi folder, blok 2/5 — lihat … |
-| 117 | `self-test.js` | 2099 | CATATAN (Sesi 297): file ini adalah runtime app (bukan file test Node), tapi namanya cocok pola default `node --test` (*-test.js) sehingga bisa ke-load & "gagal" kalau `node --test` dijalankan TANPA argumen di root. … |
+| 117 | `self-test.js` | 2109 | CATATAN (Sesi 297): file ini adalah runtime app (bukan file test Node), tapi namanya cocok pola default `node --test` (*-test.js) sehingga bisa ke-load & "gagal" kalau `node --test` dijalankan TANPA argumen di root. … |
 | 118 | `pajak-aset-ui-wrappers.js` | 161 | Wrapper UI tipis: parser angka (parsePzNum/parseDecStr/ normalizeOcrNumber), ganti tab pajak/zakat (setPajakTab/setPjkTab/savePajakSettings), dan delegasi tipis ke modul … |
 | 119 | `modules/finance/finance-intelligence.js` | 238 | Finance Intelligence Foundation (Sesi 74, Batch 6). Target sesi: Cash Flow Summary, Budget Summary, Income vs Expense, Financial Health Score, Insight dasar — lihat docs/BATCH_PLAN.md § Batch 6. PRINSIP (RULE #1 sesi … |
 | 120 | `modules/finance/finance-dashboard.js` | 202 | modules/finance/finance-dashboard.js — Finance Dashboard & AI Hook Foundation (Sesi 75, Batch 6). Lihat docs/BATCH_PLAN.md § Batch 6. PRINSIP (RULE #1 sesi ini): UI HANYA presenter. 100% REUSE … |
@@ -438,7 +438,9 @@ bisa dipanggil sebagai "global" dari file manapun lewat bundel gabungan.
 | `_scannerSessionActive` | `modules/shared/scanner-session.js` |
 | `_scannerSessionCount` | `modules/shared/scanner-session.js` |
 | `_scannerSessionEnsureStyle` | `modules/shared/scanner-session.js` |
+| `_scannerSessionHasLiveOverlay` | `modules/shared/scanner-session.js` |
 | `_scannerSessionPrevChrome` | `modules/shared/scanner-session.js` |
+| `_scannerSessionSelfHeal` | `modules/shared/scanner-session.js` |
 | `_selfTestAssert` | `self-test.js` |
 | `_sendChatInner` | `ai-chat.js` |
 | `_sessionRawPin` | `modules/shared/keamanan-pin.js` |
@@ -1958,6 +1960,7 @@ bisa dipanggil sebagai "global" dari file manapun lewat bundel gabungan.
 | `sparepartScannerGalleryAdapter` | `modules/vehicle/sparepart-scanner.js` |
 | `sparepartScannerGetAdapter` | `modules/vehicle/sparepart-scanner.js` |
 | `sparepartScannerHandleCode` | `modules/vehicle/sparepart-scanner.js` |
+| `sparepartScannerIsHarmlessDecodeError` | `modules/vehicle/sparepart-scanner.js` |
 | `sparepartScannerListAdapters` | `modules/vehicle/sparepart-scanner.js` |
 | `sparepartScannerPauseCamera` | `modules/vehicle/sparepart-scanner.js` |
 | `sparepartScannerPickImageFile` | `modules/vehicle/sparepart-scanner.js` |
@@ -2219,6 +2222,7 @@ bisa dipanggil sebagai "global" dari file manapun lewat bundel gabungan.
 | `vehicleScannerDetachLifecycle` | `modules/vehicle/vehicle-scanner.js` |
 | `vehicleScannerErrorMessage` | `modules/vehicle/vehicle-scanner.js` |
 | `vehicleScannerHandleResult` | `modules/vehicle/vehicle-scanner.js` |
+| `vehicleScannerIsHarmlessDecodeError` | `modules/vehicle/vehicle-scanner.js` |
 | `vehicleScannerPauseCamera` | `modules/vehicle/vehicle-scanner.js` |
 | `vehicleScannerRecordScan` | `modules/vehicle/vehicle-scanner.js` |
 | `vehicleScannerResumeCamera` | `modules/vehicle/vehicle-scanner.js` |

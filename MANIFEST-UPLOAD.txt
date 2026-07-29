@@ -1,0 +1,7 @@
+Semua folder di bawah ini SUDAH ADA di repo GitHub Anda (tidak perlu buat folder baru).
+Browse ke path repo yang tertera, Add file > Upload files, pilih semua file dalam folder itu.
+
+root/  ->  (repo root)   (7 file)
+docs/  ->  docs   (2 file)
+modules_shared/  ->  modules/shared   (4 file)
+modules_vehicle/  ->  modules/vehicle   (2 file)

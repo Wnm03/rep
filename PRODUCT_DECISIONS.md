@@ -485,3 +485,44 @@ Dashboard Hub yang sudah ada (`DashboardHubSummary`/
 wrapper pass-through — belum ada konsumen AI yang memanggilnya sesi
 ini. Wiring nyata ke `ai-chat.js`/AI briefing adalah keputusan produk
 terpisah utk sesi mendatang, JANGAN ditebak.
+
+## Scanner — Exclusive Scanner Mode via ScannerSession (FINAL — Sesi 316, PD-007)
+
+> **AUDIT (Sesi 312, ditambahkan saat cek konsistensi docs pasca pemisahan
+> file):** section ini SEHARUSNYA sudah ada sejak Sesi 316/317 — dikutip
+> persis dgn judul ini oleh `modules/shared/scanner-session.js`,
+> `modules/vehicle/vehicle-scanner.js`, `modules/vehicle/sparepart-scanner.js`,
+> `modules/shared/modal-navigasi.js`, `scripts/build.js`, &
+> `tests/scanner-session.test.js` — tapi isinya baru pernah ditulis di
+> `CHANGELOG.md` § Sesi 317 & `docs/NEXT_SESSION.md`, tidak pernah dipromosikan
+> ke sini. Konten di bawah murni konsolidasi dari sumber yang sudah final &
+> sudah diimplementasi (0 keputusan baru dibuat sesi ini).
+
+Keputusan produk FINAL (Tahap 5, Sesi 316): scanner apa pun (`VehicleScanner`,
+`SparepartScanner`, & scanner masa depan) WAJIB berjalan lewat SATU titik
+masuk/keluar tunggal — `ScannerSession.enter()`/`exit()`
+(`modules/shared/scanner-session.js`). Tidak ada jalur lain yang boleh
+suspend/resume UI global (modal/toast/dashboard chrome) di luar file ini.
+Scanner Engine (lapisan ZXing/decode — `vehicle-scanner.js`/
+`sparepart-scanner.js`) 0% menyentuh modal/toast/dashboard; tanggung jawab
+itu 100% dipindah ke `ScannerSession.pauseUI()`/`resumeUI()`.
+
+**Tahap 6 (Sesi 317)** menuntaskan migrasi: `vehicleScannerHideChrome()`/
+`vehicleScannerRestoreChrome()` dihapus dari `vehicle-scanner.js`; blok IIFE
+`camera-scan-active` (`MutationObserver`+`setInterval(400ms)`+
+`document.querySelector('video')`) dihapus total dari `modal-navigasi.js`.
+State "scanner aktif" jadi EKSPLISIT (`_scannerSessionCount`, reference
+counter — lihat audit lanjutan di kepala `scanner-session.js`), bukan lagi
+disimpulkan dari keberadaan `<video>` di DOM.
+
+**Urutan wajib:**
+- `enter()`: suspend UI global (`pauseUI()`) DULU, baru Scanner Engine boleh
+  membangun overlay & mulai decode.
+- `exit()`: Scanner Engine teardown overlay DULU, baru UI global di-resume
+  (`resumeUI()`) — kebalikan dari `enter()`, supaya tidak ada jendela waktu
+  scanner & UI global aktif bersamaan.
+
+TIDAK ada logic baru di `VehicleScanner`/`SparepartScanner` sendiri dari
+keputusan ini — murni pemindahan tanggung jawab suspend/resume UI ke satu
+titik. Audit lanjutan (self-healing guard, overlay-registry) dicatat sendiri
+di komentar `scanner-session.js` & `docs/architecture/OVERLAY-REGISTRY-AUDIT.md`.

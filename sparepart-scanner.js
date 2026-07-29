@@ -173,6 +173,17 @@ function sparepartScannerApplyTorchCapability(video, flashBtn) {
   return false;
 }
 
+// Reuse VehicleScanner.isHarmlessDecodeError() (vehicle-scanner.js) — pola
+// guard typeof SAMA PERSIS sparepartScannerErrorMessage() di bawah, fallback
+// aman kalau VehicleScanner belum/tidak dimuat (mis. test terisolasi): TIDAK
+// tahu -> anggap fatal (lebih aman drpd diam-diam menelan error sungguhan).
+function sparepartScannerIsHarmlessDecodeError(err) {
+  if (typeof VehicleScanner !== 'undefined' && VehicleScanner && typeof VehicleScanner.isHarmlessDecodeError === 'function') {
+    return VehicleScanner.isHarmlessDecodeError(err);
+  }
+  return false;
+}
+
 function sparepartScannerRegisterAdapter(name, fn) {
   if (!name || typeof fn !== 'function') return false;
   _sparepartScannerAdapters[name] = fn;
@@ -385,10 +396,33 @@ function sparepartScannerCameraAdapter() {
               if (sparepartScannerShouldDebounce(code, Date.now())) return;
               sparepartScannerRecordScan(code, Date.now());
               stop(code);
+              return;
             }
             // NotFoundException dilempar terus-menerus selama belum ada kode di
             // frame — normal utk continuous scan, BUKAN error, diabaikan sama
             // seperti vehicleScannerScan().
+            //
+            // BUGFIX (sesi ini — lihat vehicleScannerIsHarmlessDecodeError()
+            // di vehicle-scanner.js): `err` di sini SEBELUMNYA tidak pernah
+            // dibaca — kalau ZXing mengirim error FATAL (mis. izin kamera
+            // ditolak) lewat parameter callback per-frame ini (bukan lewat
+            // reject() decodeFromConstraints/decodeFromVideoDevice, satu-
+            // satunya jalur yang tertangkap catch block di bawah sebelum fix
+            // ini), reader "hidup" terus tanpa hasil/toast/exit() — overlay+
+            // kamera nyangkut permanen. Lebih riskan di sini drpd
+            // vehicleScannerScan(): stop()/toast() di sana 1 fungsi yang
+            // sama, di sini exit()/reject() (adapter ini) terpisah dari
+            // toast (sparepartScannerScan(), pemanggilnya) — reject() TETAP
+            // dipakai (bukan resolve(null)) supaya lewat catch block yang
+            // sudah ada di sana & tampil errorMessage() yang benar, sama
+            // seperti jalur reject() lain di adapter ini.
+            if (err && !stopped && !sparepartScannerIsHarmlessDecodeError(err)) {
+              stopped = true;
+              console.error('[SparepartScanner] gagal scan (per-frame):', err);
+              sparepartScannerTeardownOverlay(reader, ui, lifecycleHandlers);
+              if (_session) _session.exit();
+              reject(err);
+            }
           };
 
           try {
@@ -541,6 +575,7 @@ const SparepartScanner = {
   applyTorchCapability: sparepartScannerApplyTorchCapability,
   pauseCamera: sparepartScannerPauseCamera,
   resumeCamera: sparepartScannerResumeCamera,
+  isHarmlessDecodeError: sparepartScannerIsHarmlessDecodeError,
 };
 
 if (typeof window !== 'undefined') {
